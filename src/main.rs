@@ -23,10 +23,10 @@ fn main() -> eyre::Result<(), ErrReport> {
     let file = cli.file.as_deref().unwrap();
 
     if cli.metadata == true {
-        let data = metadata::get_data(file)?;
+        let data = metadata::FileData::new(file)?;
         println!(
-            "Size:     {} bytes\nCreated:  {}\nModified: {}\nAccessed: {}\n",
-            data.size, data.created, data.modified, data.accessed
+            "Inode: {}\nUID: {}\nSize:     {} bytes\nCreated:  {}\nModified: {}\nAccessed: {}\nBlock Size: {}\nBlocks: {}\n",
+            data.ino, data.uid, data.size, data.created, data.modified, data.accessed, data.blksize, data.blocks
         );
     }
 
