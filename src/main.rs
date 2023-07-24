@@ -24,10 +24,7 @@ fn main() -> eyre::Result<(), ErrReport> {
 
     if cli.metadata == true {
         let data = metadata::FileData::new(file)?;
-        println!(
-            "Inode: {}\nUID: {}\nSize:     {} bytes\nCreated:  {}\nModified: {}\nAccessed: {}\nBlock Size: {}\nBlocks: {}\n",
-            data.ino, data.uid, data.size, data.created, data.modified, data.accessed, data.blksize, data.blocks
-        );
+        println!("{:#?}", data);
     }
 
     if cli.content == true {
