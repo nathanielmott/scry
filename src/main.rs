@@ -28,11 +28,8 @@ fn main() -> eyre::Result<(), ErrReport> {
     }
 
     if cli.content == true {
-        let analysis = contents::analyze_file(file)?;
-        println!(
-            "Words:      {}\nLines:      {}\nParagraphs: {}\n",
-            analysis.word_count, analysis.line_count, analysis.paragraph_count
-        );
+        let analysis = contents::FileAnalysis::new(file)?;
+        println!("{:#?}", analysis);
     }
     Ok(())
 }
