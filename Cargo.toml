@@ -1,4 +1,7 @@
 [package]
+authors = ["Nathaniel Mott"]
+categories = ["command-line-utilities"]
+description = "stats for bards and wizards alike"
 name = "scry"
 version = "0.1.0"
 edition = "2021"
@@ -9,3 +12,16 @@ edition = "2021"
 chrono = "0.4.26"
 clap = {version = "4.3.19", features = ["derive"]}
 eyre = "0.6.8"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
+
+# [target.x86_64-pc-windows-msvc]
+# linker = "lld"
+# rustflags = [
+#   "-Lnative=/home/mott/.xwin/crt/lib/x86_64",
+#   "-Lnative=/home/mott/.xwin/sdk/lib/um/x86_64",
+#   "-Lnative=/home/mott/.xwin/sdk/lib/ucrt/x86_64"
+# ]
