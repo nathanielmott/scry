@@ -4,6 +4,7 @@ use std::fs::{metadata, Metadata};
 
 #[cfg(not(target_os = "windows"))]
 use std::os::unix::fs::MetadataExt as UnixMetadata;
+use users;
 
 #[cfg(target_os = "windows")]
 use std::os::windows::fs::MetadataExt as WindowsMetadata;
@@ -12,7 +13,7 @@ use std::os::windows::fs::MetadataExt as WindowsMetadata;
 #[cfg(not(target_os = "windows"))]
 pub struct FileData {
     pub ino: u64,
-    pub uid: u32,
+    pub user: String,
     pub size: u64,
     pub created: String,
     pub modified: String,
@@ -25,22 +26,25 @@ impl FileData {
     pub fn new(file: &str) -> eyre::Result<FileData, ErrReport> {
         let data: Metadata = metadata(&file)?;
         let ino = data.ino();
-        let uid = data.uid();
+        let user = match users::get_user_by_uid(data.uid()) {
+            Some(user) => user.name().to_str().unwrap().to_string(),
+            None => data.uid().to_string(),
+        };
         let size = data.len();
         let created: DateTime<Local> = DateTime::from(data.created()?);
         let modified: DateTime<Local> = DateTime::from(data.modified()?);
         let accessed: DateTime<Local> = DateTime::from(data.accessed()?);
 
-        let formatted_created_time = format!("{}", created.format("%m/%d/%Y %H:%M"));
-        let formatted_modified_time = format!("{}", modified.format("%m/%d/%Y %H:%M"));
-        let formatted_accessed_time = format!("{}", accessed.format("%m/%d/%Y %H:%M"));
+        let formatted_created_time = format!("{}", created.format("%b %d, %Y %H:%M %Z"));
+        let formatted_modified_time = format!("{}", modified.format("%b %d, %Y %H:%M %Z"));
+        let formatted_accessed_time = format!("{}", accessed.format("%b %d, %Y %H:%M %Z"));
 
         let blksize = data.blksize();
         let blocks = data.blocks();
 
         Ok(FileData {
             ino,
-            uid,
+            user,
             size,
             created: formatted_created_time,
             modified: formatted_modified_time,
@@ -68,9 +72,9 @@ impl FileData {
         let last_access_time: DateTime<Utc> = DateTime::from(metadata.accessed()?);
         let last_write_time: DateTime<Utc> = DateTime::from(metadata.modified()?);
 
-        let formatted_created_time = format!("{}", creation_time.format("%m/%d/%Y %H:%M"));
-        let formatted_accessed_time = format!("{}", last_access_time.format("%m/%d/%Y %H:%M"));
-        let formatted_modified_time = format!("{}", last_write_time.format("%m/%d/%Y %H:%M"));
+        let formatted_created_time = format!("{}", created.format("%b %d, %Y %H:%M %Z"));
+        let formatted_modified_time = format!("{}", modified.format("%b %d, %Y %H:%M %Z"));
+        let formatted_accessed_time = format!("{}", accessed.format("%b %d, %Y %H:%M %Z"));
 
         let file_size = metadata.file_size();
 
