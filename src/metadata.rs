@@ -8,6 +8,7 @@ use users;
 
 #[cfg(target_os = "windows")]
 use std::os::windows::fs::MetadataExt as WindowsMetadata;
+use windows::Win32::System::Time;
 
 #[derive(Debug)]
 #[cfg(not(target_os = "windows"))]
@@ -68,6 +69,8 @@ pub struct FileData {
 impl FileData {
     pub fn new(file: &str) -> eyre::Result<FileData, ErrReport> {
         let metadata: Metadata = metadata(&file)?;
+
+        // let
         let creation_time: DateTime<Utc> = DateTime::from(metadata.created()?);
         let last_access_time: DateTime<Utc> = DateTime::from(metadata.accessed()?);
         let last_write_time: DateTime<Utc> = DateTime::from(metadata.modified()?);
