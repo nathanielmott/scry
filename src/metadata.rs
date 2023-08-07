@@ -6,10 +6,6 @@ use std::fs::{metadata, Metadata};
 use std::os::unix::fs::MetadataExt as UnixMetadata;
 use users;
 
-#[cfg(target_os = "windows")]
-use std::os::windows::fs::MetadataExt as WindowsMetadata;
-use windows::Win32::System::Time;
-
 #[derive(Debug)]
 #[cfg(not(target_os = "windows"))]
 pub struct FileData {
@@ -55,6 +51,9 @@ impl FileData {
         })
     }
 }
+#[cfg(target_os = "windows")]
+use std::os::windows::fs::MetadataExt as WindowsMetadata;
+use windows::Win32::System::Time;
 
 #[derive(Debug)]
 #[cfg(target_os = "windows")]
