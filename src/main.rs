@@ -24,12 +24,18 @@ fn main() -> eyre::Result<(), ErrReport> {
 
     if cli.metadata == true {
         let data = metadata::FileData::new(file)?;
-        println!("{:#?}", data);
+        println!(
+            "Bytes: {}\nCreated:  {}\nModified: {}\nAccessed: {}",
+            data.size, data.created, data.modified, data.accessed
+        );
     }
 
     if cli.content == true {
         let analysis = contents::FileAnalysis::new(file)?;
-        println!("{:#?}", analysis);
+        println!(
+            "Words: {}\nLines: {}\nGrafs: {}",
+            analysis.word_count, analysis.line_count, analysis.paragraph_count
+        );
     }
     Ok(())
 }
