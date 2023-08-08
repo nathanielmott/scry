@@ -1,6 +1,6 @@
 use chrono::prelude::*;
 use eyre::ErrReport;
-use std::fs::{metadata, Metadata};
+use std::fs::{canonicalize, metadata, Metadata};
 
 #[cfg(not(target_os = "windows"))]
 use std::os::unix::fs::MetadataExt as UnixMetadata;
@@ -11,6 +11,7 @@ use users;
 pub struct FileData {
     pub ino: u64,
     pub user: String,
+    pub path: String,
     pub size: u64,
     pub created: String,
     pub modified: String,
@@ -27,6 +28,13 @@ impl FileData {
             Some(user) => user.name().to_str().unwrap().to_string(),
             None => data.uid().to_string(),
         };
+        let path: String = match canonicalize(file) {
+            Ok(path) => path
+                .into_os_string()
+                .into_string()
+                .expect("could not resolve path"),
+            Err(..) => String::from("could not resolve path"),
+        };
         let size = data.len();
         let created: DateTime<Local> = DateTime::from(data.created()?);
         let modified: DateTime<Local> = DateTime::from(data.modified()?);
@@ -42,6 +50,7 @@ impl FileData {
         Ok(FileData {
             ino,
             user,
+            path,
             size,
             created: formatted_created_time,
             modified: formatted_modified_time,
@@ -53,6 +62,7 @@ impl FileData {
 }
 #[cfg(target_os = "windows")]
 use std::os::windows::fs::MetadataExt as WindowsMetadata;
+#[cfg(target_os = "windows")]
 use windows::Win32::System::Time;
 
 #[derive(Debug)]
