@@ -22,7 +22,7 @@ fn main() -> eyre::Result<(), ErrReport> {
     let cli = Cli::parse();
     let file = cli.file.as_deref().unwrap();
 
-    if cli.metadata == true {
+    if cli.metadata {
         let data = metadata::FileData::new(file)?;
         println!(
             "User:     {}\nPath:     {}\nBytes:    {}\nCreated:  {}\nModified: {}\nAccessed: {}",
@@ -30,7 +30,7 @@ fn main() -> eyre::Result<(), ErrReport> {
         );
     }
 
-    if cli.content == true {
+    if cli.content {
         let analysis = contents::FileAnalysis::new(file)?;
         println!(
             "Words: {}\nLines: {}\nGrafs: {}",

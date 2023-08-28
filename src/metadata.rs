@@ -4,7 +4,6 @@ use std::fs::{canonicalize, metadata, Metadata};
 
 #[cfg(not(target_os = "windows"))]
 use std::os::unix::fs::MetadataExt as UnixMetadata;
-use users;
 
 #[derive(Debug)]
 #[cfg(not(target_os = "windows"))]
@@ -22,7 +21,7 @@ pub struct FileData {
 #[cfg(not(target_os = "windows"))]
 impl FileData {
     pub fn new(file: &str) -> eyre::Result<FileData, ErrReport> {
-        let data: Metadata = metadata(&file)?;
+        let data: Metadata = metadata(file)?;
         let ino = data.ino();
         let user = match users::get_user_by_uid(data.uid()) {
             Some(user) => user.name().to_str().unwrap().to_string(),
