@@ -328,7 +328,6 @@ dependencies = [
  "clap",
  "eyre",
  "users",
- "windows",
 ]
 
 [[package]]

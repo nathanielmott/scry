@@ -26,7 +26,7 @@ fn main() -> eyre::Result<(), ErrReport> {
         let data = metadata::FileData::new(file)?;
         println!(
             "User:     {}\nPath:     {}\nBytes:    {}\nCreated:  {}\nModified: {}\nAccessed: {}",
-            data.user, data.path, data.size, data.created, data.modified, data.accessed
+            data.user, data.path, data.size, data.created, data.modified, data.accessed,
         );
     }
 
